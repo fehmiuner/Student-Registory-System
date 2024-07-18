@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Öğrenci Veri Girişi</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    .container {
+        margin-top: 50px;
+    }
+    .form-container {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .table-container {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .table-container .table {
+        text-align: center;
+    }
+    .table-container th, .table-container td {
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-container">
+                <h2 class="mb-4">Öğrenci Veri Girişi</h2>
+                <form id="studentForm">
+                    <div class="form-group">
+                        <label for="studentName">Öğrenci Adı:</label>
+                        <input type="text" class="form-control" id="studentName" name="studentName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentSurname">Öğrenci Soyadı:</label>
+                        <input type="text" class="form-control" id="studentSurname" name="studentSurname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentNumber">Numarası:</label>
+                        <input type="text" class="form-control" id="studentNumber" name="studentNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentDepartment">Bölümü:</label>
+                        <input type="text" class="form-control" id="studentDepartment" name="studentDepartment" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentBirthDate">Doğum Tarihi:</label>
+                        <input type="date" class="form-control" id="studentBirthDate" name="studentBirthDate" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="table-container">
+                <h2 class="mb-4">Öğrenci Listesi</h2>
+                <input type="text" class="form-control mb-3" id="searchInput" placeholder="Arama...">
+                <div class="table-responsive">
+                    <table id="studentTable" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Adı</th>
+                                <th>Soyadı</th>
+                                <th>Numarası</th>
+                                <th>Bölümü</th>
+                                <th>Doğum Tarihi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Buraya jQuery ile eklenecek öğrenci kayıtları gelecek -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#studentForm').submit(function(event) {
+            event.preventDefault();
+            var formData = $(this).serializeArray();
+            var studentData = {};
+            $(formData).each(function(index, obj) {
+                studentData[obj.name] = obj.value;
+            });
+            addStudentToTable(studentData);
+            $('#studentForm')[0].reset(); // Formu temizle
+        });
+
+        $('#searchInput').on('input', function() {
+            var searchText = $(this).val().toLowerCase();
+            $('#studentTable tbody tr').each(function() {
+                var rowText = $(this).text().toLowerCase();
+                if (rowText.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+            if ($('#studentTable tbody tr:visible').length === 0) {
+                $('#studentTable tbody').html('<tr><td colspan="5">Aradığınız kriterlerde kayıt bulunamamıştır</td></tr>');
+            }
+        });
+    });
+
+    function addStudentToTable(studentData) {
+        var newRow = '<tr>';
+        newRow += '<td>' + studentData.studentName + '</td>';
+        newRow += '<td>' + studentData.studentSurname + '</td>';
+        newRow += '<td>' + studentData.studentNumber + '</td>';
+        newRow += '<td>' + studentData.studentDepartment + '</td>';
+        newRow += '<td>' + studentData.studentBirthDate + '</td>';
+        newRow += '</tr>';
+        $('#studentTable tbody').append(newRow);
+        $('#studentTable').animate({scrollLeft: $('#studentTable').prop("scrollWidth")}, 500); // Tabloyu sağa kaydır
+    }
+</script>
+
+</body>
+</html>
